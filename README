@@ -15,5 +15,5 @@ pingmailrc.example file for more details.
 
 To install as an hourly cronjob, define $path_to_pingmail_script_file, then do:
 
-line='0 * * * * '$path_to_pingmail_script_file' check'
+line='0 * * * * '$path_to_pingmail_script_file' check > /dev/null'
 (crontab -l; echo "$line") | crontab -
