@@ -53,7 +53,7 @@ else
     modtime=$modtime_pingfile
 fi
 delta=`expr $now - $modtime`
-echo "Wait time since last life sign or ping sent: "$delta" seconds:"
+echo "Wait time since last life sign or ping sent: "$delta" seconds."
 
 # if delta > wait time, send reminder to person to check with, start reminder
 # mail timer if not in existence, re-touch ping wait file
