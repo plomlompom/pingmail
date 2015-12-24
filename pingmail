@@ -58,7 +58,7 @@ echo "Wait time since last life sign or ping sent: "$delta" seconds."
 # if delta > wait time, send reminder to person to check with, start reminder
 # mail timer if not in existence, re-touch ping wait file
 if [ "$delta" -gt "$wait_time" ]; then
-    echo $msg2checked | mutt -s "$subj2checked" $checked_address
+    echo $msg2checked | $mailclient_s "$subj2checked" $checked_address
     echo "Sending ping message."
     touch $ping_touch
     if [ ! -f "$reminder_touch" ]; then
@@ -78,7 +78,7 @@ if [ -f "$reminder_touch" ]; then
     else
         delta=`expr $now - $modtime_reminder`
         if [ "$delta" -gt "$wait_time" ]; then
-            echo $msg2checker | mutt -s "$subj2checker" $checker_address
+            echo $msg2checker | $mailclient_s "$subj2checker" $checker_address
             echo "Sending reminder message."
             rm $reminder_touch
             echo "Deleting reminder message wait time file."

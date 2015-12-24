@@ -1,7 +1,5 @@
 Small shell script to regularly check a target person's responsiveness via mail.
 
-Expects mutt to be usable for sending mails via command line.
-
 When run as "pingmail check", searches a maildir for the most recent file
 matching a regex pattern (such as a "From: " field matching the target person),
 and if the most recent file is too old, sends an e-mail to the target person

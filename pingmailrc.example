@@ -34,6 +34,9 @@ msg2checker='pingmail reporting in:\n
 \nNo life signs from '$id_target' for the last '$reminder_time' seconds.
 \nMaybe you should give them a call to check if they are okay.'
 
+# mail client command reading message body from stdin and subject from parameter
+mailclient_s='mutt -s'
+
 # pattern to search $maildir for recursively for lifesigns
 checked_address_escaped=`echo $checked_address | sed 's/\./\\./g'`
 matchstring='^From: .*('$checked_address_escaped'|alternate@example\.org)'
