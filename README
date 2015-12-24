@@ -1,0 +1,21 @@
+Small shell script to regularly check a target person's responsiveness via mail.
+
+Expects mutt to be usable for sending mails via command line.
+
+When run as "pingmail check", searches a maildir for the most recent file
+matching a regex pattern (such as a "From: " field matching the target person),
+and if the most recent file is too old, sends an e-mail to the target person
+requesting some sign of life. After some more wait time without a sign of life,
+sends a warning message to another mail address that target person is
+unresponsive.
+
+The wait time counter can be reset manually with "pingmail touch".
+
+The wait time, the target and checking persons' mail addresses, the regex, the
+maildir path etc. must be set in a dotfile ~/.pingmailrc. See comments in
+pingmailrc.example file for more details.
+
+To install as an hourly cronjob, define $path_to_pingmail_script_file, then do:
+
+line='0 * * * * '$path_to_pingmail_script_file' check'
+(crontab -l; echo $line) | crontab -

@@ -1,0 +1,39 @@
+# place for test files whose modification times are used to track lifesigns
+testdir=$HOME'/.pingmail'
+
+# modification time is the last time a ping was sent or a lifetime received
+ping_touch=$testdir'/ping_touch'
+
+# modification time is when the count for sending checker a warning mail starts
+reminder_touch=$testdir'/reminder_touch'
+
+# to recursively search for most recent matches to $matchstring as lifesigns
+maildir=$HOME'/mail'
+
+# how long to wait for lifesigns before sending a ping; double is time to wait
+# for a lifesign before sending a warning message to checker
+wait_time=86400
+
+# address of the checker, receives warning message after too long wait
+checker_address='bar@example.org'
+
+# address of the checked person, ping is sent here
+checked_address='foo@example.org'
+
+# content of ping message sent to checked person
+subj2checked='[pingmail] Ping!'
+msg2checked='Hi!\n
+\nThis is an automated mail ping from '$checker_address'.
+\nRespond to show that you are still alive!'
+
+# content of warning message sent to checker
+id_target='foo'
+subj2checker='[pingmail] No recent life signs from '$id_target
+reminder_time=`expr $wait_time \* 2`
+msg2checker='pingmail reporting in:\n
+\nNo life signs from '$id_target' for the last '$reminder_time' seconds.
+\nMaybe you should give them a call to check if they are okay.'
+
+# pattern to search $maildir for recursively for lifesigns
+checked_address_escaped=`echo $checked_address | sed 's/\./\\./g'`
+matchstring='^From: .*('$checked_address_escaped'|alternate@example\.org)'

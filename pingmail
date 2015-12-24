@@ -1,0 +1,87 @@
+#!/bin/sh
+
+set -e
+
+# read in dotfile
+pingmailrc=$HOME'/.pingmailrc'
+if [ ! -f $pingmailrc ]; then
+    echo 'No .pingmailrc found at '$pingmailrc', aborting.'
+    exit
+fi
+. $HOME'/.pingmailrc'
+mkdir -p $testdir
+
+# interpret arguments
+if [ "$1" = "check" ]; then
+    continue
+elif [ "$1" = "touch" ]; then
+    touch $ping_touch
+    exit
+else
+    echo 'usage: '$0' COMMAND\n(COMMAND one of "check", "touch")'
+    exit
+fi
+
+# check test file for last modtime 
+modtime_pingfile=0
+if [ -f $ping_touch ]; then
+    modtime_pingfile=`stat $ping_touch --format=%Y`
+fi
+
+# search maildir for last life sign datetime
+modtime_mails=0
+while read file; do
+    if [ -z $file ]; then
+        break
+    fi
+    modtime=`stat $file --format=%Y`
+    if [ "$modtime" -gt "$modtime_mails" ]; then
+        modtime_mails=$modtime
+    fi
+done <<EOF
+$(grep -lER "$matchstring" $maildir)
+EOF
+
+# find delta of last life sign datetime / test file modtime and current datetime
+now=`date +%s`
+modtime=0
+if [ "$modtime_mails" -gt "$modtime_pingfile" ]; then
+    echo "The most recent life sign is in the mails."
+    modtime=$modtime_mails
+else
+    echo "Ping wait file was updated more recently than last life sign from the mails."
+    modtime=$modtime_pingfile
+fi
+delta=`expr $now - $modtime`
+echo "Wait time since last life sign or ping sent: "$delta" seconds:"
+
+# if delta > wait time, send reminder to person to check with, start reminder
+# mail timer if not in existence, re-touch ping wait file
+if [ "$delta" -gt "$wait_time" ]; then
+    echo $msg2checked | mutt -s "$subj2checked" $checked_address
+    echo "Sending ping message."
+    touch $ping_touch
+    if [ ! -f "$reminder_touch" ]; then
+        touch $reminder_touch
+        echo "Creating reminder message wait time file."
+    fi
+fi
+
+# if last life sign datetime / test file modtime > modtime of reminder touch
+# file, delete it; otherwise, if delta between those > wait time, send reminder
+# to person checking and then delete reminder touch file 
+if [ -f "$reminder_touch" ]; then
+    modtime_reminder=`stat $reminder_touch --format=%Y`
+    if [ "$modtime" -gt "$modtime_reminder" ]; then
+        rm $reminder_touch
+        echo "Deleting reminder message wait time file."
+    else
+        delta=`expr $now - $modtime_reminder`
+        if [ "$delta" -gt "$wait_time" ]; then
+            echo $msg2checker | mutt -s "$subj2checker" $checker_address
+            echo "Sending reminder message."
+            rm $reminder_touch
+            echo "Deleting reminder message wait time file."
+        fi
+    fi
+fi
