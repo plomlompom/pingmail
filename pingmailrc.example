@@ -7,9 +7,6 @@ ping_touch=$testdir'/ping_touch'
 # modification time is when the count for sending checker a warning mail starts
 reminder_touch=$testdir'/reminder_touch'
 
-# to recursively search for most recent matches to $matchstring as lifesigns
-maildir=$HOME'/mail'
-
 # how long to wait for lifesigns before sending a ping; double is time to wait
 # for a lifesign before sending a warning message to checker
 wait_time=86400
@@ -36,6 +33,12 @@ msg2checker='pingmail reporting in:\n
 
 # mail client command reading message body from stdin and subject from parameter
 mailclient_s='mutt -s'
+
+# mailbox file to check for most recent life sign
+mbox=$HOME'/mail/foo'
+
+# to recursively search for most recent matches to $matchstring as lifesigns
+maildir=$HOME'/mail'
 
 # pattern to search $maildir for recursively for lifesigns
 checked_address_escaped=`echo $checked_address | sed 's/\./\\./g'`

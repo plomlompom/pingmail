@@ -1,5 +1,14 @@
 Small shell script to regularly check a target person's responsiveness via mail.
 
+When run as "pingmail check", tries to derive the last time a person sent a
+mail to the local system by either a) searching a maildir for the most recent
+file matching a regex pattern (such as a "From: " field matching the target
+person), and looking at thta file's modification time, or b) checking the
+modification time of a defined mailbox file. If that point in time is too
+distant, sends an e-mail to the target person requesting some sign of life.
+After some more wait time without a sign of life, sends a warning message to
+another mail address that target person is unresponsive.
+
 When run as "pingmail check", searches a maildir for the most recent file
 matching a regex pattern (such as a "From: " field matching the target person),
 and if the most recent file is too old, sends an e-mail to the target person
