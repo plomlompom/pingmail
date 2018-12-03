@@ -32,7 +32,7 @@ msg2checker='pingmail reporting in:\n
 \nMaybe you should give them a call to check if they are okay.'
 
 # mail client command reading message body from stdin and subject from parameter
-mailclient_s='mutt -s'
+mailclient_s='mail -s'
 
 # mailbox file to check for most recent life sign
 mbox=$HOME'/mail/foo'
